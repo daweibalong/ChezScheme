@@ -39,3 +39,68 @@
 - converted s_test_schlib shifts of -1 to equivalent shifts of 1 to
   avoid undefined left-shift behavior on negative numbers.
     prim5.c
+- added if(---) {} wrapper around call to WRITE in display macro to
+  silence unused return-value warnings.
+    prim5.c
+- liberalized get-mode check for ../mats.  it's not our business whether
+  people make their directories group and/or other writeable.
+    6.ms
+- make test now prints the actual relative path to summary in the
+  "check summary" message, whether invoked from the top-level directory
+  or from the workarea.
+    Makefile.in, Makefile-workarea.in
+- configure now just uses cat to copy Makefile-workarea.in to $w/workarea,
+  since the file is presently the same regardless of the configuration.
+    configure
+- fixed time-utc->date test in mat time&date-printing to work regardless of
+  what locale (and time zone) the host machine has set.
+    date.ms
+- fixed date->time-utc to honor the zone-offset field when converting a date
+  object to a time-utc object.
+    stats.c,
+    date.ms
+- fixed incorrect handling of library-extension when searching wpo files
+    compile.ss,
+    7.ms
+- modified floatify_normalize to properly round denormalized results.
+  obviated scale_float in the process.
+    number.c,
+    ieee.ms
+- fixed 0eNNNN for large NNNN to produce 0.0 rather than infinity
+    strnum.ss,
+    5_3.ms
+- the reader now raises an exception with condition type implementation
+  restriction (among the other usual lexical condition types), and
+  string->number now raises #f, for #e<m>@<a>, where <m> and <a> are
+  nonzero integers, since Chez Scheme can't represent polar numbers other
+  than 0@<n> and <n>@0 exactly.  <m>@<a> still produces an inexact result,
+  i.e., we're still extending the set of inexact numeric constants beyond
+  what R6RS dictates.  doing this required a rework of $str->num, which
+  turned into a fairly extensive rewrite that fixed up a few other minor
+  issues (like r6rs:string->number improperly allowing 1/2e10) and
+  eliminated the need for consumers to call $str->num twice in cases
+  where it can actually produce a number.  added some related new tests,
+  including several found missing by profiling.  added a couple of
+  checks to number->string the absence of which was causing argument
+  errors to be reported by other routines.
+    strnum.ss, exceptions.ss, read.ss
+    5_3.ms, 6.ms, root-experr*, patch*
+- added pdtml flag, which if set to t causes profile-dump-html to be
+  called at the end of a mat run.
+    mats/Mf-base
+- compile-whole-program and compile-whole-library now copy the hash-bang
+  line from the wpo file (if it has one) to the object file.
+    compile.ss,
+    7.ms
+- stex is now a submodule.  csug/Makefile and release_notes/Makefile
+  set and use the required Scheme and STEXLIB variables accordingly.
+  they default the machine type to a6le, but this can be overridden
+  and is by the generated top-level Makefile.  the generated top-level
+  Makefile now has a new docs target that runs make in both csug and
+  release_notes, and an updated distclean target that cleans the same.
+  the annoying csug Makefile .fig.pdf rule redefinition is now gone.
+  copyright.stex and csug.stex now list May 2016 as the revision month
+  and date; this will have to be updated for future releases.
+    configure, makefiles/Makefile.in,
+    csug/Makefile, copyright.stex, csug.stex,
+    release_notes/Makefile
