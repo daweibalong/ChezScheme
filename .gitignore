@@ -2,6 +2,7 @@
 .*.sw?
 .sw?
 /Makefile
+/TAGS
 /a6le/
 /a6nt/
 /a6osx/
@@ -15,3 +16,4 @@
 /ti3le/
 /ti3nt/
 /ti3osx/
+/xc-*/
