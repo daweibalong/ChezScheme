@@ -1000,15 +1000,15 @@ been added, per SRFI~19:
 (subtract-duration \var{t1} \var{t2}) ;=> \var{t3}
 \endschemedisplay
 
-\scheme{time-duration} takes two time objects \var{t1} and \var{t2},
+\scheme{time-difference} takes two time objects \var{t1} and \var{t2},
 which must have the same time type, and returns the result of subtracting
 \var{t2} from \var{t1}, represented as a new time object with type
-\scheme{duration}.
+\scheme{time-duration}.
 \scheme{add-duration} adds time object \var{t2}, which must be of type
-\scheme{duration}, to time object \var{t1}, producing a new time object
+\scheme{time-duration}, to time object \var{t1}, producing a new time object
 \var{t3} with the same type as \var{t1}.
 \scheme{subtract-duration} subtracts time object \var{t2} which must be
-of type \scheme{duration}, from time object \var{t1}, producing a new
+of type \scheme{time-duration}, from time object \var{t1}, producing a new
 time object \var{t3} with the same type as \var{t1}.
 
 SRFI~19 also names destructive versions of these operators:
@@ -1366,7 +1366,7 @@ This can be configured only by instructions executed in kernel mode.
 \textbf{procedure:} \scheme{(#%$read-time-stamp-counter)}
 
 This procedure returns the current value of the time-stamp counter for
-the CPU core executing this code.
+the processor core executing this code.
 A general protection fault, which manifests as an invalid memory
 reference exception, results if this operation is not permitted by
 the operating system.
@@ -1473,6 +1473,12 @@ On Windows, the inliner has been fixed to handle \scheme{wchar} and
 \subsection{path-related procedures cause invalid memory reference with non-string arguments in Windows (9.4)}
 
 On Windows, the path-related procedures now raise an appropriate exception when the path argument is not a string.
+
+\subsection{Internal mutex structure not always thread safe (9.4)}
+
+The internal mutex structure now has its fields marked
+\scheme{volatile} so that the C compiler does not reorder assignments
+to these fields.
 
 \subsection{\protect\scheme{dynamic-wind} mistakenly enabling interrupts (9.3.3)}
 
@@ -1582,7 +1588,7 @@ extra memory required for managing heap storage and increased the
 likelihood that memory can be returned to the O/S as the heap
 shrinks.
 Returning memory to the O/S is now faster, so the minimum time for
-for a maximum-generation collection, or any other collection where
+a maximum-generation collection, or any other collection where
 release of memory to the O/S is enabled, has been cut.
 
 \subsection{Faster library load times (9.3.1)}
@@ -1595,7 +1601,7 @@ loaded.
 
 The source optimizer now maintains information about partially static
 record instances to eliminate field accesses and type checks when a
-binding site for a record instances is visible to the access or checking
+binding site for a record instance is visible to the access or checking
 code.
 For example,
 
